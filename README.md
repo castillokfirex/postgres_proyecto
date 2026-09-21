@@ -85,3 +85,69 @@ El proyecto incluye scripts y consultas orientadas a:
 - **Vistas y Vistas Materializadas:** Creadas para el análisis y reportes sobre datos consolidados.
 - **Procedimientos y Funciones Almacenadas (PL/pgSQL):** Para abstraer lógica de negocio compleja (asignaciones, validaciones transaccionales, cálculos de cumplimiento).
 - **Triggers:** Para mantener de forma estricta los registros de auditoría (logs de campos clave, cambios de estado), control automático de fechas (`updated_at`), comprobación de dependencias (impedir que registros activos se borren) y el manejo de los bloqueos.
+
+---
+
+## 6. Tecnologías Utilizadas
+
+- **Base de Datos:** PostgreSQL 16
+- **Administración DB:** pgAdmin 4
+- **Infraestructura y Contenedores:** Docker y Docker Compose
+- **Entorno de Desarrollo:** Visual Studio Code (Dev Containers)
+
+## 7. Estructura del Proyecto
+
+El repositorio está organizado de la siguiente manera:
+
+```text
+├── .devcontainer/             # Configuración para entorno de desarrollo en VSCode
+├── init/                      # Scripts de inicialización para Docker (si aplica)
+├── modelos_conceptual_fisico/ # Diagramas Entidad-Relación y diseño de la BD
+├── sql/                       # Archivos de scripts DDL y DML complementarios
+├── docker-compose.yml         # Configuración para levantar PostgreSQL y pgAdmin localmente
+├── consultas.sql              # Recopilación de todas las consultas, vistas y triggers del proyecto
+└── README.md                  # Documentación principal
+```
+
+## 8. Diagramas Entidad-Relación
+
+A continuación se presentan los modelos conceptuales y físicos de la arquitectura multi-tenant de la base de datos:
+
+### Modelo Conceptual
+![Diagrama Conceptual](./modelos_conceptual_fisico/mermaid-diagram.png)
+
+### Modelo Físico
+![Modelo Físico](./modelos_conceptual_fisico/image.png)
+
+## 9. Instrucciones de Instalación y Uso
+
+Este proyecto está contenerizado usando Docker, lo cual facilita enormemente su configuración y ejecución sin necesidad de instalar PostgreSQL de manera global en tu sistema.
+
+### Requisitos Previos
+- Instalar [Docker](https://www.docker.com/) y Docker Compose.
+- (Opcional) Configurar las variables de entorno en un archivo `.env` en la raíz del proyecto para definir usuarios y contraseñas.
+
+### Pasos para ejecutar:
+1. **Clonar el repositorio y ubicarse en la raíz:**
+   Abre una terminal y dirígete a la carpeta del proyecto.
+
+2. **Levantar los servicios:**
+   Ejecuta el siguiente comando para iniciar la base de datos PostgreSQL y la interfaz web de pgAdmin:
+   ```bash
+   docker-compose up -d
+   ```
+   *Esto descargará las imágenes necesarias (postgres:16 y pgadmin4) e inicializará la base de datos en segundo plano.*
+
+3. **Acceder a la Base de Datos:**
+   - Puedes acceder mediante pgAdmin a través de tu navegador local en el puerto especificado en el `docker-compose.yml` (por defecto el puerto 80 del contenedor, mapeado según tu archivo `.env`).
+   - Opcionalmente, puedes conectarte directamente usando cualquier cliente SQL (como DBeaver o VSCode SQLTools) al puerto local `5432`.
+
+4. **Cargar Estructura y Consultas:**
+   - La base de datos ejecutará inicialmente cualquier script presente en la carpeta `init/`.
+   - Podrás probar toda la lógica del negocio ejecutando el script [`consultas.sql`](./consultas.sql), el cual contiene desde consultas básicas hasta funciones PL/pgSQL avanzadas.
+
+5. **Detener los servicios:**
+   Cuando termines, puedes detener y eliminar los contenedores ejecutando:
+   ```bash
+   docker-compose down
+   ```
